@@ -33,10 +33,14 @@ void main(List<String> arguments) async {
     await res.render('list',jsonData);
     });
 
-  app.post('/delete', (req, res) async {
+  app.get('/delete', (req, res) async {
     print('delete');
     var id = req.queryParameters['id'];
     print('id $id');
+
+//    var repo = PersonRepository();
+//    await repo.deletePerson(id);
+
   });
 
   print('Starting web server on port $port');
