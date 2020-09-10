@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Favorite Colours</title>
+</head>
+<style type="text/css">
+        .br {
+            display: block;
+            margin-bottom: 0em;
+        }
+
+        .brmedium {
+            display: block;
+            margin-bottom: 1em;
+        }
+
+        .brlarge {
+            display: block;
+            margin-bottom: 2em;
+        }
+    </style>
+<body>
+<H3>Colours We love</H3>
+
+This is the colours people love
+<span class="brlarge"></span>
+{{#people}}
+<table>
+    <tr>
+        <td>{{id}}</td>
+        <td>{{name}} </td>
+        <td>{{colour}}</td>
+    </tr>
+</table>
+{{/people}}
+
+
+{{^people}}
+<div>No names.</div>
+{{/people}}</body>
+
+</html>
