@@ -38,6 +38,7 @@ void main(List<String> arguments) async {
     print('delete');
     var id = int.parse(req.queryParameters['id']);
     print('id $id');
+
     var repo = PersonRepository();
     repo.deletePerson(id);
     await res.render('delete',null);
