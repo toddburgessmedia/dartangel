@@ -29,14 +29,18 @@ void main(List<String> arguments) async {
     var persons = await repo.getPersons();
     var jsonRaw = persons.map((e) => e.toJson()).toList();
     var jsonData = { 'people' : jsonRaw };
+    print(jsonData);
 
     await res.render('list',jsonData);
     });
 
-  app.post('/delete', (req, res) async {
+  app.get('/delete', (req, res) async {
     print('delete');
-    var id = req.queryParameters['id'];
+    var id = int.parse(req.queryParameters['id']);
     print('id $id');
+    var repo = PersonRepository();
+    repo.deletePerson(id);
+    await res.render('delete',null);
   });
 
   print('Starting web server on port $port');

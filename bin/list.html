@@ -27,10 +27,10 @@
             <td style="width:30%">{{name}} </td>
             <td style="width:20%">{{colour}}</td>
             <td>
-                <FORM method="post" action="/delete">
+                <FORM method="get" action="/delete">
                     <input type="hidden" name="id" value="{{id}}">
-                    <button type="button" class=".button">Edit</button>
-                    <button type="button">Delete</button>
+<!--                    <button type="submit" class=".button">Edit</button>-->
+                    <button type="submit">Delete</button>
                 </FORM>
             </td>
         </tr>

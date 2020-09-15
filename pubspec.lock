@@ -58,7 +58,7 @@ packages:
     source: hosted
     version: "2.0.0"
   angel_route:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: angel_route
       url: "https://pub.dartlang.org"

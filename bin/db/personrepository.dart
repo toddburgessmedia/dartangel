@@ -28,9 +28,9 @@ class PersonRepository {
         username: "dart", password: "dart");
     await connection.open();
 
-    await connection.query('DELETE FROM fun WHERE id=$id');
+    await connection.execute('DELETE FROM fun WHERE my_id=$id').then((value) => connection.close());
 
-    await connection.close();
+    // await connection.close();
 
   }
 
