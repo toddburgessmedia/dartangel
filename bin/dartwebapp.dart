@@ -8,6 +8,8 @@ import 'db/personrepository.dart';
 
 import 'package:file/local.dart';
 
+import 'model/person.dart';
+
 
 void main(List<String> arguments) async {
 
@@ -26,7 +28,7 @@ void main(List<String> arguments) async {
   app.get('/list', (req, res) async {
     print('list db');
     var repo = PersonRepository();
-    var persons = await repo.getPersons();
+    var persons = await repo.getAllPersons();
     var jsonRaw = persons.map((e) => e.toJson()).toList();
     var jsonData = { 'people' : jsonRaw };
     print(jsonData);
@@ -34,14 +36,56 @@ void main(List<String> arguments) async {
     await res.render('list',jsonData);
     });
 
-  app.get('/delete', (req, res) async {
+  app.post('/delete', (req, res) async {
+    await req.parseBody();
     print('delete');
-    var id = int.parse(req.queryParameters['id']);
+    var id = int.parse(req.bodyAsMap['id'] as String);
     print('id $id');
 
     var repo = PersonRepository();
     repo.deletePerson(id);
     await res.render('delete',null);
+  });
+
+  app.post('/add/:action', (req, res) async {
+    await req.parseBody();
+    var action = req.params['action'] ?? 'true' ;
+    print('needForm $action');
+    // var params = req.queryParameters;
+    // print('params : $params');
+    if (action == 'needform') {
+      await res.render('add', null);
+    } else {
+      var personname = req.bodyAsMap['personname'] as String;
+      var personcolour = req.bodyAsMap['personcolour'] as String;
+
+      var person = Person(name: personname, colour: personcolour);
+      var repo = PersonRepository();
+      repo.insertPerson(person);
+
+      await res.render('personadded', person.toJson());
+    }
+
+  });
+
+  app.post('/update/:action', (req, res) async {
+    await req.parseBody();
+    var action = req.params['action'] ?? 'true' ;
+
+    var repo = PersonRepository();
+    if (action == 'needform') {
+      var id = int.parse(req.bodyAsMap['id'] as String);
+      var person = await repo.getPerson(id);
+      await res.render('update',person.toJson());
+    } else {
+      var id = int.parse(req.bodyAsMap['id'] as String);
+      var name = req.bodyAsMap['personname'] as String;
+      var colour = req.bodyAsMap['personcolour'] as String;
+      var person = Person(id: id,name: name,colour: colour);
+
+      await repo.updatePerson(person);
+      await res.render('personupdated',person.toJson());
+    }
   });
 
   print('Starting web server on port $port');
