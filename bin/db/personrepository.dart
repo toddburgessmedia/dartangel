@@ -8,44 +8,47 @@ class PersonRepository {
 
     var persons = <Person>{};
 
-    var connection = PostgreSQLConnection("localhost", 5432, "todd",
-        username: "dart", password: "dart");
-    await connection.open();
+    PostgreSQLConnection connection = await openConnection();
 
     List<List<dynamic>> results = await connection.query('SELECT * FROM fun');
     results.forEach((row) => persons.add(Person.fromSQL(row)));
 
-    await connection.close();
+    await closeConnection(connection);
     return persons;
   }
 
-  void deletePerson(int id) async {
+  Future closeConnection(PostgreSQLConnection connection) async {
+    await connection.close();
+  }
+
+  Future<PostgreSQLConnection> openConnection() async {
     var connection = PostgreSQLConnection("localhost", 5432, "todd",
         username: "dart", password: "dart");
     await connection.open();
+    return connection;
+  }
+
+  void deletePerson(int id) async {
+    PostgreSQLConnection connection = await openConnection();
 
     await connection.transaction((connection) async {
       var result = await connection.execute('DELETE FROM fun WHERE my_id=$id');
     });
 
-    await connection.close();
+    await closeConnection(connection);
   }
 
   Future<Person> getPerson(int id) async {
-    var connection = PostgreSQLConnection("localhost", 5432, "todd",
-        username: "dart", password: "dart");
-    await connection.open();
+    PostgreSQLConnection connection = await openConnection();
 
     List<List<dynamic>> results = await connection.query('SELECT * FROM fun WHERE my_id=$id');
-    await connection.close();
+    await closeConnection(connection);
 
     return Person.fromSQL(results[0]);
   }
   
   void insertPerson(Person person) async {
-    var connection = PostgreSQLConnection("localhost", 5432, "todd",
-        username: "dart", password: "dart");
-    await connection.open();
+    PostgreSQLConnection connection = await openConnection();
 
     var name = person.name;
     var colour = person.colour;
@@ -54,13 +57,11 @@ class PersonRepository {
       var result = await connection.execute('insert into fun values(nextval(\'fun_my_id_seq\'),\'$name\',\'$colour\');');
     });
 
-    await connection.close();
+    await closeConnection(connection);
   }
 
   void updatePerson(Person person) async {
-    var connection = PostgreSQLConnection("localhost", 5432, "todd",
-        username: "dart", password: "dart");
-    await connection.open();
+    PostgreSQLConnection connection = await openConnection();
 
     var id = person.id;
     var name = person.name;
@@ -70,7 +71,7 @@ class PersonRepository {
       var result = await connection.execute('update fun set name=\'$name\', colour=\'$colour\' WHERE my_id=$id;');
     });
 
-    await connection.close();
+    await closeConnection(connection);
 
   }
 
