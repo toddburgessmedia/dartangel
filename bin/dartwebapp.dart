@@ -26,19 +26,17 @@ void main(List<String> arguments) async {
 
   // list action route
   app.get('/list', (req, res) async {
-    print('list db');
     var repo = PersonRepository();
     var persons = await repo.getAllPersons();
     var jsonRaw = persons.map((e) => e.toJson()).toList();
     var jsonData = { 'people' : jsonRaw };
-    print(jsonData);
 
     await res.render('list',jsonData);
     });
 
+  // delete route
   app.post('/delete', (req, res) async {
     await req.parseBody();
-    print('delete');
     var id = int.parse(req.bodyAsMap['id'] as String);
     print('id $id');
 
@@ -47,12 +45,10 @@ void main(List<String> arguments) async {
     await res.render('delete',null);
   });
 
+  // create new person route
   app.post('/add/:action', (req, res) async {
     await req.parseBody();
-    var action = req.params['action'] ?? 'true' ;
-    print('needForm $action');
-    // var params = req.queryParameters;
-    // print('params : $params');
+    var action = req.params['action'] ?? 'submitform' ;
     if (action == 'needform') {
       await res.render('add', null);
     } else {
@@ -68,9 +64,10 @@ void main(List<String> arguments) async {
 
   });
 
+  // update person route
   app.post('/update/:action', (req, res) async {
     await req.parseBody();
-    var action = req.params['action'] ?? 'true' ;
+    var action = req.params['action'] ?? 'submitform' ;
 
     var repo = PersonRepository();
     if (action == 'needform') {
@@ -88,6 +85,7 @@ void main(List<String> arguments) async {
     }
   });
 
+  // fire up the server
   print('Starting web server on port $port');
   await http.startServer(hostname, port);
 
